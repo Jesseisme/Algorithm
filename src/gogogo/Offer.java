@@ -619,6 +619,30 @@ public class Offer {
 		return Math.max(left, right) + 1;
 	}
 
+	public int maxDepth(TreeNode pRoot) {
+		if (pRoot == null) {
+			return 0;
+		}
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        LinkedList<TreeNode> temp = new LinkedList<>();
+        int res = 0;
+        queue.add(pRoot);
+        while (!queue.isEmpty()) {
+            temp = new LinkedList<>();
+            for (TreeNode treeNode : queue) {
+                if (treeNode.left != null) {
+                    temp.add(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    temp.add(treeNode.right);
+                }
+            }
+            queue = temp;
+            res++;
+        }
+        return res;
+    }
+
 	// 是否为平衡二叉树
 	boolean flag = true;
 
@@ -1091,39 +1115,67 @@ public class Offer {
 		}
 	}
 
+    public boolean exist(char[][] board, String word) {
+        char[] words = word.toCharArray();
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[0].length; j++) {
+                if(dfs(board, words, i, j, 0)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    boolean dfs(char[][] board, char[] word, int i, int j, int k) {
+        if(i >= board.length || i < 0 || j >= board[0].length || j < 0 || board[i][j] != word[k])
+            return false;
+        if(k == word.length - 1)
+            return true;
+        board[i][j] = '\0';
+        boolean res = dfs(board, word, i + 1, j, k + 1)
+                || dfs(board, word, i - 1, j, k + 1)
+                || dfs(board, word, i, j + 1, k + 1)
+                || dfs(board, word, i , j - 1, k + 1);
+        //回溯
+        board[i][j] = word[k];
+        return res;
+    }
+
 	// 地上有一个m行和n列的方格。一个机器人从坐标0,0的格子开始移动，每一次只能向左，右，上，下四个方向移动一格，但是不能进入行坐标和列坐标的数位之和大于k的格子。
 	// 例如，当k为18时，机器人能够进入方格（35,37），因为3+5+3+7 = 18。但是，它不能进入方格（35,38），因为3+5+3+8 =
 	// 19。请问该机器人能够达到多少个格子？
-	int count2 = 0;
+    // 机器人的运动范围
+    public int movingCount(int m, int n, int k) {
+        boolean[][] visited = new boolean[m][n];
+        // 机器人从[0,0]坐标开始移动
+        return dfs(m, n ,k , visited, 0, 0);
+    }
 
-	public int movingCount(int threshold, int rows, int cols) {
-		int array[][] = new int[rows][cols];
-		int a[][] = new int[Integer.MAX_VALUE][Integer.MAX_VALUE];
-		movingCount(threshold, rows, cols, 0, 0, array);
-		return count2;
-	}
+    public int dfs(int m, int n, int k, boolean[][] visited, int x, int y){
+        // 递归终止条件
+        if((get(x) + get(y) > k) || x < 0 || x >= m || y < 0 || y >= n || visited[x][y]){
+            return 0;
+        }
+        // 将该格子标记为已经访问过
+        visited[x][y] = true;
+        // 继续搜索四个方向
+        return 1 + dfs(m, n , k, visited, x, y+1)
+                + dfs(m, n , k, visited, x, y-1)
+                + dfs(m, n , k, visited, x+1, y)
+                + dfs(m, n , k, visited, x-1, y);
+        // 回溯的返回过程
+    }
 
-	private int movingCount(int threshold, int rows, int cols, int i, int j, int array[][]) {
-		if (i < 0 || i >= rows || j < 0 || j >= cols || (getSum(i) + getSum(j)) > threshold || array[i][j] == 1) {
-			return 0;
-		}
-		array[i][j] = 1;
-		count2++;
-		movingCount(threshold, rows, cols, i + 1, j, array);
-		movingCount(threshold, rows, cols, i - 1, j, array);
-		movingCount(threshold, rows, cols, i, j + 1, array);
-		movingCount(threshold, rows, cols, i, j - 1, array);
-		return count;
-	}
-
-	private int getSum(int i) {
-		int sum = 0;
-		while (i > 0) {
-			sum += i % 10;
-			i = i / 10;
-		}
-		return sum;
-	}
+    // 计算一个数的各个位数之和
+    private int get(int x) {
+        int res = 0;
+        while (x != 0) {
+            res += x % 10;
+            x /= 10;
+        }
+        return res;
+    }
 	//中序遍历
 	public void inOrderTraverse1(TreeNode root) {
 		if (root != null) {
@@ -1160,7 +1212,6 @@ public class Offer {
         for (int j = 0; j < s.length(); j++) {
             if (map.containsKey(s.charAt(j))) {
                 i = Math.max(map.get(s.charAt(j)),i);
-
             }
             map.put(s.charAt(j), j);
             res = Math.max(res, j - i);
