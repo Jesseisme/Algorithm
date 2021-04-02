@@ -11,11 +11,11 @@ public class Quick {
 		sort(a, 0, a.length - 1);
 	}
 
-	// 对于小序列，直接采用插入排序替代
 	private static void sort(int[] a, int lo, int hi) {
 		
 		  if (lo >= hi) return;
-		 
+
+		// 对于小序列，直接采用插入排序替代
 /*		if (hi - lo <= CUTTOFF - 1) {
 			Sort.Insertion(a, lo, hi);
 			return;
@@ -30,12 +30,16 @@ public class Quick {
 		int j = hi + 1;
 		int v = a[lo];
 		while (true) {
-			while (a[++i] < v) { 
+			Product	while (a[++i] < v) {
 				if (i == hi) { 
 					break;
 				}
 			}
-			while (a[--j] > v) if (j == lo) break;
+			while (a[--j] > v) {
+				if (j == lo) {
+					break;
+				}
+			}
 			
 			if(i>=j) break;
 			swap(a, i, j);

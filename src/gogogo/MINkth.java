@@ -40,7 +40,6 @@ public class MINkth {
 		return j;
 	}
 	private static void swap(int[] a, int i, int j) {
-		// TODO Auto-generated method stub
 		int temp= a[j];
 		a[j] = a[i];
 		a[i]= temp;

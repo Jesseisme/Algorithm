@@ -24,7 +24,7 @@ public class Sort {
 		}
 	}
 
-	public static void Insertion(int array[]) {
+	public static void insertion(int array[]) {
 		int N = array.length;
 		for (int i = 1; i < N; i++) {
 			for (int j = i; j > 0; j--) {

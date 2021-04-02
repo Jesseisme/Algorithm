@@ -30,26 +30,6 @@ public class Offer {
 
 	}
 
-	// 质数
-	public void getZhishu(int n) {
-		boolean[] isprime = new boolean[100];
-		for (int i = 0; i < isprime.length; i++) {
-			isprime[i] = true;
-		}
-		for (int i = 2; i < isprime.length; i++) {
-			for (int k = i; i * k < isprime.length; k++) {
-				isprime[i * k] = false;
-			}
-		}
-
-		for (int i = 2; i < isprime.length; i++){
-			if (isprime[i]){
-				System.out.print(i + " ");
-			}
-		}
-
-	}
-
 	// 输入一个链表，从尾到头打印链表每个节点的值。
 	ArrayList<Integer> a = new ArrayList<Integer>();
 
@@ -61,7 +41,8 @@ public class Offer {
 		return a;
 	}
 
-    //翻转链表
+	//1->2->3
+    //翻转链表 反转
 	public ListNode reverseList(ListNode head) {
 		ListNode prev = null;
 		ListNode curr = head;
@@ -89,24 +70,6 @@ public class Offer {
 			}
 		}
 		return (int) stack2.pop();
-	}
-
-	// 旋转数组的最小数字
-	public int minNumberInRotateArray(int[] numbers) {
-		int lo = 0;
-		int hi = numbers.length - 1;
-		int mid = lo;
-		while (lo < hi) {
-			mid = lo + (hi - lo) / 2;
-			if (numbers[mid] > numbers[hi]) {
-				lo = mid + 1;
-			} else if (numbers[mid] < numbers[hi]) {
-				hi = mid;
-			} else {
-				hi--;
-			}
-		}
-		return numbers[hi];
 	}
 
 	// 跳台阶
@@ -174,22 +137,28 @@ public class Offer {
 	}
 
     //求根到叶子节点数字之和
-        public int sumNumbers(TreeNode root) {
-            return dfs(root, 0);
-        }
 
-        public int dfs(TreeNode root, int prevSum) {
-            if (root == null) {
-                return 0;
-            }
-            int sum = prevSum * 10 + root.val;
-            if (root.left == null && root.right == null) {
-                return sum;
-            } else {
-                return dfs(root.left, sum) + dfs(root.right, sum);
-            }
-        }
+    int ans = 0;
+    public int sumNumbers2(TreeNode root) {
+        if (root == null) return 0;
+        int temp = 0;
+        dfs2(root, temp);
+        return ans;
+    }
 
+    public void dfs2(TreeNode root, int temp) {
+        temp = temp * 10 + root.val;
+        if (root.left == null && root.right == null) {
+            ans += temp;
+            return;
+        }
+        if (root.left != null) {
+            dfs2(root.left, temp);
+        }
+        if (root.right != null) {
+            dfs2(root.right, temp);
+        }
+    }
 
 	// 链表 倒数第k个数
 	public ListNode FindKthToTail(ListNode head, int k) {
@@ -449,14 +418,14 @@ public class Offer {
 			else{
 				total = array[i];
 			}
-			if (total > maxSum){
-				maxSum = total;
-			}
+			maxSum = Math.max(total, maxSum);
 		}
 		return maxSum;
 
 	}
 
+	//输入：nums = [3,30,34,5,9]
+    //输出："9534330"
 	// 输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
 	public String PrintMinNumber(int[] numbers) {
 		int n = numbers.length;
@@ -611,6 +580,7 @@ public class Offer {
 	}
 
 	// 输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+	//深度优先
 	public int TreeDepth(TreeNode pRoot) {
 		if (pRoot == null)
 			return 0;
@@ -619,6 +589,7 @@ public class Offer {
 		return Math.max(left, right) + 1;
 	}
 
+	//广度优先
 	public int maxDepth(TreeNode pRoot) {
 		if (pRoot == null) {
 			return 0;
@@ -844,7 +815,7 @@ public class Offer {
 		return false;
 	}
 
-	// 输入两个链表，找出它们的第一个公共结点。
+	// 输入两个链表，找出它们的第一个公共结点。 相交链表
 	// a+n+b=b+n+a
 	public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
 		ListNode p1 = pHead1;
@@ -880,9 +851,7 @@ public class Offer {
 					fast = fast.next;
 
 				}
-				if (slow == fast) {
-					return slow;
-				}
+				return slow;
 			}
 		}
 	}
@@ -1204,20 +1173,23 @@ public class Offer {
         }
     }
 
-	//最长不含重复字符的子字符串
+	//最长不含重复字符的子字符串   无重复字符的最长子串
 	public int lengthOfLongestSubstring(String s) {
-        HashMap<Character, Integer> map = new HashMap<>();
-        int i = -1;
-        int res = -1;
-        for (int j = 0; j < s.length(); j++) {
-            if (map.containsKey(s.charAt(j))) {
-                i = Math.max(map.get(s.charAt(j)),i);
-            }
-            map.put(s.charAt(j), j);
-            res = Math.max(res, j - i);
-        }
-        return res;
-    }
+		if(s.length()<1){
+			return 0;
+		}
+		HashMap<Character, Integer> map = new HashMap<>();
+		int index = -1;
+		int res = -1;
+		for (int i = 0; i < s.length(); i++) {
+			if (map.containsKey(s.charAt(i))) {
+				index = Math.max(map.get(s.charAt(i)),index);
+			}
+			map.put(s.charAt(i), i);
+			res = Math.max(res, i - index);
+		}
+		return res;
+	}
 
     public static void main(String[] args) {
         Offer offer = new Offer();
@@ -1246,19 +1218,21 @@ public class Offer {
     //凑硬币   一个额度几种组合方法
 
     //不同路径
-    public int uniquePaths(int m, int n) {
+    public int uniquePaths(int[][] obstacleGrid) {
         int[][] f = new int[m][n];
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m&& obstacleGrid[i][0] == 0; i++) {
             f[i][0] = 1;
         }
-        for (int j = 0; j < n; j++) {
+        for (int j = 0; j < n&& obstacleGrid[0][j] == 0; j++) {
             f[0][j] = 1;
         }
 
         for (int x = 1; x < m; x++) {
             for (int y = 1; y < n; y++) {
-                f[x][y] = f[x - 1][y] + f[x][y-1];
+				if (obstacleGrid[i][j] == 0) {
+					f[x][y] = f[x - 1][y] + f[x][y-1];
+				}
             }
         }
         return f[m][n];
@@ -1303,6 +1277,322 @@ public class Offer {
         }
         return res;
     }
+
+    //k 翻转
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode hair = new ListNode(0);
+        hair.next = head;
+
+        ListNode pre = hair;
+        ListNode end = hair;
+
+        while (end.next != null) {
+            for (int i = 0; i < k; ++i) {
+                end = end.next;
+                if (end == null) {
+                    return hair.next;
+                }
+            }
+            ListNode start = pre.next;
+            ListNode next = end.next;
+            end.next = null;
+
+            pre.next = reverse(start);
+            start.next = next;
+            pre = start;
+            end = pre;
+        }
+        return hair.next;
+    }
+
+    private ListNode reverse(ListNode head) {
+        ListNode pre = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode next = curr.next;
+            curr.next = pre;
+            pre = curr;
+            curr = next;
+        }
+        return pre;
+    }
+
+    //最小路径和
+    public int minPathSum(int[][] grid) {
+        int[][] dp = new int[grid.length][grid.length];
+        dp[0][grid.length - 1] = grid[0][grid.length-1];
+        for (int i = 0; i < grid.length; i++) {
+            dp[i][grid.length - 1] = grid[i][grid.length - 1];
+        }
+        for (int i = 0; i < grid.length; i++) {
+            dp[0][i] = grid[0][i];
+        }
+
+        for (int i = grid.length - 2; i >= 0; i--) {
+            for (int j = 1; j < grid.length; j++) {
+                dp[j][i] = Math.min(dp[j][i] + dp[i - 1][j], dp[j][i] + dp[i][j - 1]);
+            }
+        }
+
+        return dp[grid.length - 1][0];
+    }
+
+
+    //有效的括号
+	public boolean isValidKuoHao(String s) {
+		int n = s.length();
+		if (n % 2 == 1) {
+			return false;
+		}
+
+		Map<Character, Character> pairs = new HashMap<Character, Character>() {{
+			put(')', '(');
+			put(']', '[');
+			put('}', '{');
+		}};
+		Deque<Character> stack = new LinkedList<Character>();
+		for (int i = 0; i < n; i++) {
+			char ch = s.charAt(i);
+			if (pairs.containsKey(ch)) {
+				if (stack.isEmpty() || stack.peek() != pairs.get(ch)) {
+					return false;
+				}
+				stack.pop();
+			} else {
+				stack.push(ch);
+			}
+		}
+		return stack.isEmpty();
+	}
+
+	//字符串相加
+	public String addStrings(String num1, String num2) {
+		int i = num1.length() - 1, j = num2.length() - 1, add = 0;
+		StringBuffer ans = new StringBuffer();
+		while (i >= 0 || j >= 0 || add != 0) {
+			int x = i >= 0 ? num1.charAt(i) - '0' : 0;
+			int y = j >= 0 ? num2.charAt(j) - '0' : 0;
+			int result = x + y + add;
+			ans.append(result % 10);
+			add = result / 10;
+			i--;
+			j--;
+		}
+		// 计算完以后的答案需要翻转过来
+		ans.reverse();
+		return ans.toString();
+	}
+
+	//给你二叉树的根结点 root ，请你将它展开为一个单链表：
+	// 展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+	//展开后的单链表应该与二叉树 先序遍历 顺序相同。
+	public void flatten(TreeNode root) {
+		if (root == null) {
+			return;
+		}
+		flatten(root.left);
+		flatten(root.right);
+		TreeNode temp = root.right;
+		root.right = root.left;
+		root.left = null;
+		while (root.right != null) {
+			root = root.right;
+		}
+		root.right = temp;
+	}
+
+    // 旋转数组的最小数字
+    public int findMin(int[] nums) {
+		if (nums.length == 1) {
+			return nums[0];
+		}
+		int left = 0, right = nums.length - 1;
+
+		// if the last element is greater than the first element then there is no rotation.
+		// e.g. 1 < 2 < 3 < 4 < 5 < 7. Already sorted array.
+		// Hence the smallest element is first element. A[0]
+		if (nums[right] > nums[0]) {
+			return nums[0];
+		}
+
+		while (right >= left) {
+			int mid = left + (right - left) / 2;
+
+			if (nums[mid] > nums[mid + 1]) {
+				return nums[mid + 1];
+			}
+			if (nums[mid - 1] > nums[mid]) {
+				return nums[mid];
+			}
+
+			if (nums[mid] > nums[0]) {
+				left = mid + 1;
+			} else {
+				right = mid - 1;
+			}
+		}
+		return -1;
+	}
+
+	void dfs(char[][] grid, int r, int c) {
+		int nr = grid.length;
+		int nc = grid[0].length;
+
+		if (r < 0 || c < 0 || r >= nr || c >= nc || grid[r][c] == '0') {
+			return;
+		}
+
+		grid[r][c] = '0';
+		dfs(grid, r - 1, c);
+		dfs(grid, r + 1, c);
+		dfs(grid, r, c - 1);
+		dfs(grid, r, c + 1);
+	}
+
+	public int numIslands(char[][] grid) {
+		if (grid == null || grid.length == 0) {
+			return 0;
+		}
+
+		int nr = grid.length;
+		int nc = grid[0].length;
+		int num_islands = 0;
+		for (int r = 0; r < nr; ++r) {
+			for (int c = 0; c < nc; ++c) {
+				if (grid[r][c] == '1') {
+					++num_islands;
+					dfs(grid, r, c);
+				}
+			}
+		}
+
+		return num_islands;
+	}
+
+	//最长上升子序列
+	public int lengthOfLIS(int[] nums) {
+		if (nums.length == 0) {
+			return 0;
+		}
+		int[] dp = new int[nums.length];
+		dp[0] = 1;
+		int maxans = 1;
+		for (int i = 1; i < nums.length; i++) {
+			dp[i] = 1;
+			for (int j = 0; j < i; j++) {
+				if (nums[i] > nums[j]) {
+					dp[i] = Math.max(dp[i], dp[j] + 1);
+				}
+			}
+			maxans = Math.max(maxans, dp[i]);
+		}
+		return maxans;
+	}
+
+	//两数相加
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        int add = 0;
+        int a = 0;
+        int b = 0;
+        ListNode pre = new ListNode();
+        ListNode cur = pre;
+
+        while (l1 != null || l2 != null || add != 0) {
+            if(l1==null){
+                a = 0;
+            }else {
+                a=l1.val;
+                l1=l1.next;
+            }
+            if(l2==null){
+                b = 0;
+            }else {
+                b=l2.val;
+                l2=l2.next;
+            }
+            cur.next = new ListNode((a+b+add)%10);
+            add  = (a+b+add) / 10;
+            cur = cur.next;
+        }
+        return pre.next;
+    }
+
+    //打家劫舍
+    public int rob(int[] nums) {
+        if (nums.length == 0) {
+            return -1;
+        }
+        if (nums.length == 1) {
+            return nums[0];
+        }
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0],nums[1]);
+        for (int i = 2; i < nums.length; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+        }
+        return dp[nums.length - 1];
+    }
+
+    public ListNode oddEvenList(ListNode head) {
+	    if(head ==null){
+            return null;
+        }
+        ListNode evenHead = new ListNode();
+        ListNode even = new ListNode();
+        ListNode odd = new ListNode();
+        evenHead = head.next;
+        even = head.next;
+        odd = head;
+        while (even != null && even.next != null) {
+            odd.next = even.next;
+            odd = even.next;
+            even.next = odd.next;
+            even = odd.next;
+        }
+        odd.next = evenHead;
+        return head;
+    }
+
+
+    private TreeNode ans;
+
+    //二叉树 最近公共祖先
+    private boolean dfs(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) return false;
+        boolean lson = dfs(root.left, p, q);
+        boolean rson = dfs(root.right, p, q);
+        if ((lson && rson) || ((root.val == p.val || root.val == q.val) && (lson || rson))) {
+            ans = root;
+        }
+        return lson || rson || (root.val == p.val || root.val == q.val);
+    }
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        this.dfs(root, p, q);
+        return this.ans;
+    }
+
+    // 最长公共子序列
+    public int longestCommonSubsequence(String text1, String text2) {
+        // 动态规划
+        int len1 = text1.length();
+        int len2 = text2.length();
+
+        int[][] dp = new int[len1+1][len2+1];
+
+        for (int i=1; i<=len1; ++i) {
+            for (int j=1; j<=len2; ++j) {
+                if (text1.charAt(i-1) == text2.charAt(j-1)) {
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                }
+            }
+        }
+        return dp[len1][len2];
+    }
+
 }
 
 
